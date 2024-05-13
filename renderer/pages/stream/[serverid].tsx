@@ -79,10 +79,10 @@ function Stream() {
                             switch(state){
                                 case 'new':
                                     connStatus.innerText = 'Starting connection...'
-                                    break;
+                                    break
                                 case 'connecting':
                                     connStatus.innerText = 'Connecting to console...'
-                                    break;
+                                    break
                                 case 'connected':
                                     connStatus.innerText = 'Client has been connected!'
                                     document.getElementById('component_streamcomponent_loader').className = 'hidden'

@@ -33,7 +33,7 @@ export default class AuthTokenStore extends TokenStore {
         this._jwtKeys = undefined
     }
 
-    setStreamingTokens(streamingTokens:{ xHomeToken: StreamingToken, xCloudToken: StreamingToken }) {
+    setStreamingTokens(streamingTokens:{ xHomeToken: StreamingToken; xCloudToken: StreamingToken }) {
         this._xhomeToken = streamingTokens.xHomeToken
         this._xcloudToken = streamingTokens.xCloudToken
     }

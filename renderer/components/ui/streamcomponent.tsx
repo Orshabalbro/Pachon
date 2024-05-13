@@ -3,7 +3,6 @@ import Button from './button'
 import xPlayer from 'xbox-xcloud-player/dist/player'
 import Loader from './loader'
 import Card from './card'
-import uPlot from 'uplot'
 import Ipc from '../../lib/ipc'
 
 interface StreamComponentProps {
@@ -17,10 +16,6 @@ function StreamComponent({
     onMenu,
     xPlayer,
 }: StreamComponentProps) {
-
-    function performance_now_seconds() {
-        return performance.now() / 1000.0
-    }
 
     let lastMovement = 0
 
@@ -74,7 +69,7 @@ function StreamComponent({
             window.removeEventListener('mousemove', mouseEvent)
             window.removeEventListener('mousedown', mouseEvent)
             window.removeEventListener('keypress', keyboardPressEvent)
-            clearInterval(mouseInterval);
+            clearInterval(mouseInterval)
 
         }
     }, [])

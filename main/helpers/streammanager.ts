@@ -1,6 +1,5 @@
-import Stream from 'xbox-xcloud-player/dist/lib/stream';
+import Stream from 'xbox-xcloud-player/dist/lib/stream'
 import Application from '../application'
-import xCloudApi from './xcloudapi'
 
 import ApiClient from 'xbox-xcloud-player/dist/apiclient'
 
@@ -64,7 +63,7 @@ export default class StreamManager {
             this.getApi('home').startStream(type, target).then((stream) => {
                 console.log('Streammanager - startStream:', stream)
 
-                const sessionId = stream.getSessionId();
+                const sessionId = stream.getSessionId()
 
                 const streamSession:streamSession = {
                     id: sessionId,
@@ -78,6 +77,8 @@ export default class StreamManager {
                 this.monitorSession(sessionId)
 
                 resolve(sessionId)
+            }).catch((error) => {
+                reject(error)
             })
         })
     }
@@ -183,6 +184,7 @@ export default class StreamManager {
                 } else if(state === 'ReadyToConnect'){
                     // Do MSAL Auth
                     this._application._authentication._xal.getMsalToken(this._application._authentication._tokenStore).then((msalToken) => {
+                        console.log(msalToken)
                         // this.getApi(this.getSession(sessionId).type).sendMSALAuth(sessionId, msalToken.data.lpt).then(() => {
                         //     this.monitorSession(sessionId)
 
@@ -238,7 +240,7 @@ export default class StreamManager {
     }
 
     getActiveSessions(){
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             // this.getApi('cloud').getActiveSessions().then((result) => {
 
             //     console.log('Active sessions:', result)
@@ -246,6 +248,7 @@ export default class StreamManager {
             // }).catch((error) => {
             //     reject(error)
             // })
+            resolve([])
         })
     }
 }
