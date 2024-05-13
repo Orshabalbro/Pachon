@@ -2,12 +2,6 @@ import https from 'https'
 import Application from '../application'
 import { Address6 } from 'ip-address'
 
-export interface playResult {
-    sessionPath:string;
-    sessionId?:string;
-    state?:string;
-}
-
 export interface exchangeResult {
     exchangeResponse:string;
     errorDetails: {

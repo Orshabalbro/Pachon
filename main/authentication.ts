@@ -66,6 +66,8 @@ export default class Authentication {
 
                 this._xal.getWebToken(this._tokenStore).then((webToken) => {
                     this._application.log('authenticationV2', __filename+'[startSilentFlow()] Web token received')
+
+                    this._tokenStore.setStreamingTokens(streamingTokens)
                     
                     this._application.authenticationCompleted(streamingTokens, webToken)
 

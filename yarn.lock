@@ -2820,11 +2820,6 @@ dotenv-expand@^5.1.0:
   resolved "https://registry.npmjs.org/dotenv-expand/-/dotenv-expand-5.1.0.tgz"
   integrity sha512-YXQl1DSa4/PQyRfgrv6aoNjhasp/p4qs9FjJ4q4cQk+8m4r6k4ZSiEyytKG8f8W9gi8WsQtIObNmKd+tMzNTmA==
 
-dotenv@^16.3.1:
-  version "16.3.1"
-  resolved "https://registry.npmjs.org/dotenv/-/dotenv-16.3.1.tgz"
-  integrity sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==
-
 dotenv@^9.0.2:
   version "9.0.2"
   resolved "https://registry.npmjs.org/dotenv/-/dotenv-9.0.2.tgz"
@@ -5494,6 +5489,11 @@ uuid4@^2.0.2:
   resolved "https://registry.npmjs.org/uuid4/-/uuid4-2.0.3.tgz"
   integrity sha512-CTpAkEVXMNJl2ojgtpLXHgz23dh8z81u6/HEPiQFOvBc/c2pde6TVHmH4uwY0d/GLF3tb7+VDAj4+2eJaQSdZQ==
 
+uuid@^9.0.1:
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-9.0.1.tgz#e188d4c8853cc722220392c424cd637f32293f30"
+  integrity sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==
+
 vary@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
@@ -5642,12 +5642,12 @@ xbox-webapi@^1.4.1:
     express "^4.17.1"
     uuid4 "^2.0.2"
 
-xbox-xcloud-player@^0.2.11:
-  version "0.2.11"
-  resolved "https://registry.yarnpkg.com/xbox-xcloud-player/-/xbox-xcloud-player-0.2.11.tgz#5e65137f24ab3a133312ebaa1031afd9806d2ba7"
-  integrity sha512-it21dku4zXA09se2QCLfnE1F8AcP2UBy5UvQskz7bZv08fW49Opy/OmZ/ncsjMT4YjfMCKe+5L4ZkLeWu5+93w==
+xbox-xcloud-player@1.0.0-beta4:
+  version "1.0.0-beta4"
+  resolved "https://registry.yarnpkg.com/xbox-xcloud-player/-/xbox-xcloud-player-1.0.0-beta4.tgz#5de2c775a1b76a61605d52e0cc51fdb358937e17"
+  integrity sha512-2edkdKTb4lSEeGGkXKUKBfxYyx8nubwtBLndcQ5zpL26TIoBrLACc+iqKNNBm2ik+vn6k88ufs17I2Pttwecrw==
   dependencies:
-    dotenv "^16.3.1"
+    uuid "^9.0.1"
 
 xmlbuilder@>=11.0.1, xmlbuilder@^15.1.1:
   version "15.1.1"

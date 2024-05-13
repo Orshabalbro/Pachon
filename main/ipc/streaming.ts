@@ -3,7 +3,7 @@ import Application from '../application'
 import StreamManager from '../helpers/streammanager'
 
 interface startStreamArgs {
-    type: string;
+    type: 'home' | 'cloud';
     target: string;
 }
 

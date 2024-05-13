@@ -37,7 +37,7 @@
     "uplot": "^1.6.30",
     "xal-node": "^1.0.1",
     "xbox-webapi": "^1.4.1",
-    "xbox-xcloud-player": "^0.2.11",
+    "xbox-xcloud-player": "1.0.0-beta4",
     "xvfb-maybe": "^0.2.1"
   },
   "devDependencies": {

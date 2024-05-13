@@ -1,23 +1,36 @@
+import Stream from 'xbox-xcloud-player/dist/lib/stream';
 import Application from '../application'
-import xCloudApi, { playResult } from './xcloudapi'
+import xCloudApi from './xcloudapi'
+
+import ApiClient from 'xbox-xcloud-player/dist/apiclient'
+
+export interface playResult {
+    sessionPath:string;
+    sessionId?:string;
+    state?:string;
+}
 
 interface streamSession {
     id: string;
     target: string;
     path: string;
-    type: string|'home'|'cloud';
+    type: 'home'|'cloud';
     state?: string;
     waitingTimes?: any;
-    playerState: string|'pending'|'started'|'queued'|'failed';
+    playerState: 'pending'|'started'|'queued'|'failed';
     errorDetails?: {
         code;
         message;
     };
+    stream:Stream;
 }
 
 export default class StreamManager {
 
     _application:Application
+
+    _xHomeApi:ApiClient
+    _xCloudApi:ApiClient
 
     _sessions = {}
     
@@ -25,11 +38,19 @@ export default class StreamManager {
         this._application = application
     }
 
-    getApi(type):xCloudApi{
+    getApi(type:'home'|'cloud'){
         if(type === 'home'){
-            return this._application._xHomeApi
+            return this._xHomeApi !== undefined ? this._xHomeApi : this._xHomeApi = new ApiClient({
+                locale: 'en-US',
+                token: this._application._authentication._tokenStore.getStreamingToken('xhome').data.gsToken,
+                host: 'https://'+this._application._authentication._tokenStore.getBaseUrl('xhome'),
+            })
         } else {
-            return this._application._xCloudApi
+            return this._xCloudApi !== undefined ? this._xCloudApi : this._xCloudApi = new ApiClient({
+                locale: 'en-US',
+                token: this._application._authentication._tokenStore.getStreamingToken('xcloud').data.gsToken,
+                host: 'https://'+this._application._authentication._tokenStore.getBaseUrl('xcloud'),
+            })
         }
     }
 
@@ -37,27 +58,26 @@ export default class StreamManager {
         return this._sessions[sessionId]
     }
 
-    startStream(type:string|'home'|'cloud', target){
+    startStream(type:'home'|'cloud', target:string){
         return new Promise((resolve, reject) => {
-            this.getApi(type).startStream(target).then((playResult:playResult) => {
-            // this._application._xCloudApi.startStream(type, target).then((playResult) => {
-                console.log('Streammanager - startStream:', playResult)
 
-                const sessionId = playResult.sessionPath.split('/')[3]
+            this.getApi('home').startStream(type, target).then((stream) => {
+                console.log('Streammanager - startStream:', stream)
+
+                const sessionId = stream.getSessionId();
 
                 const streamSession:streamSession = {
                     id: sessionId,
                     target: target,
-                    path: playResult.sessionPath,
+                    path: stream.getSessionPath(),
                     type: type,
                     playerState: 'pending',
+                    stream: stream,
                 }
                 this._sessions[sessionId] = streamSession
                 this.monitorSession(sessionId)
 
                 resolve(sessionId)
-            }).catch((error) => {
-                reject(error)
             })
         })
     }
@@ -70,11 +90,7 @@ export default class StreamManager {
                 return
             }
 
-            this.getApi(session.type).stopStream(sessionId).then((result) => {
-                console.log('Current sessions:', this._sessions)
-                delete this._sessions[sessionId]
-                console.log('new sessions:', this._sessions)
-
+            session.stream.stop().then((result:any) => {
                 resolve(result)
             }).catch((error) => {
                 reject(error)
@@ -90,9 +106,9 @@ export default class StreamManager {
                 return
             }
 
-            this.getApi(session.type).sendSdp(sessionId, sdp).then((result) => {
-
-                resolve(result)
+            session.stream.sendSDPOffer({ sdp: sdp }).then((result:any) => {
+                const sdpResult = JSON.parse(result.exchangeResponse)
+                resolve(sdpResult.sdp)
             }).catch((error) => {
                 reject(error)
             })
@@ -107,9 +123,9 @@ export default class StreamManager {
                 return
             }
 
-            this.getApi(session.type).sendChatSdp(sessionId, sdp).then((result) => {
-
-                resolve(result)
+            session.stream.sendChatSDPOffer({ sdp: sdp }).then((result:any) => {
+                const sdpResult = JSON.parse(result.exchangeResponse)
+                resolve(sdpResult.sdp)
             }).catch((error) => {
                 reject(error)
             })
@@ -124,9 +140,9 @@ export default class StreamManager {
                 return
             }
 
-            this.getApi(session.type).sendIce(sessionId, ice).then((result) => {
-
-                resolve(result)
+            session.stream.sendIceCandidates(ice).then((result:any) => {
+                const iceResult = JSON.parse(result.exchangeResponse)
+                resolve(iceResult)
             }).catch((error) => {
                 reject(error)
             })
@@ -141,7 +157,7 @@ export default class StreamManager {
                 return
             }
 
-            this.getApi(session.type).sendKeepalive(sessionId).then((result) => {
+            session.stream.sendKeepalive().then((result) => {
                 resolve(result)
             }).catch((error) => {
                 reject(error)
@@ -158,53 +174,54 @@ export default class StreamManager {
                 this._application.log('StreamManager', 'monitorSession('+sessionId+') session not found')
                 return
             }
-            this.getApi(this.getSession(sessionId).type).getStreamState(sessionId).then((result:any) => {
-                console.log('Streammanager - state:', result)
 
-                this.getSession(sessionId).state = result.state
+            console.log('MONITORING SESSION:', session)
+            session.stream.refreshState().then((state) => {
+                if(state === 'Provisioned'){
+                    session.playerState = 'started'
 
-                if(result.state === 'Provisioned'){
-                    this.getSession(sessionId).playerState = 'started'
-
-                } else if(result.state === 'Provisioning'){
-                    // Lets loop again
-                    this.monitorSession(sessionId)
-
-                } else if(result.state === 'ReadyToConnect'){
+                } else if(state === 'ReadyToConnect'){
                     // Do MSAL Auth
-                    // @TODO: Refresh token if expired?
                     this._application._authentication._xal.getMsalToken(this._application._authentication._tokenStore).then((msalToken) => {
-                        this.getApi(this.getSession(sessionId).type).sendMSALAuth(sessionId, msalToken.data.lpt).then(() => {
-                            this.monitorSession(sessionId)
+                        // this.getApi(this.getSession(sessionId).type).sendMSALAuth(sessionId, msalToken.data.lpt).then(() => {
+                        //     this.monitorSession(sessionId)
 
-                        }).catch((error) => {
-                            console.log('MSAL AUTH Error:', error)
-                            alert('MSAL AUTH Error:'+ error)
-                        })
+                        // }).catch((error) => {
+                        //     console.log('MSAL AUTH Error:', error)
+                        //     alert('MSAL AUTH Error:'+ error)
+                        // })
+                        // @TODO: Implement MSAL Auth
                     }).catch((error) => {
                         console.log('MSAL AUTH Error:', error)
                         alert('MSAL AUTH Error:'+ error)
                     })
 
-                } else if(result.state === 'WaitingForResources'){
+                } else if(state === 'WaitingForResources'){
                     // Do Queue logic
-                    if(this.getSession(sessionId).waitingTimes === undefined){
-                        this.getApi(this.getSession(sessionId).type).getWaitingTimes(this.getSession(sessionId).target).then((waitingTimes) => {
-                            this.getSession(sessionId).waitingTimes = waitingTimes
-                            this.getSession(sessionId).playerState = 'queued'
+                    if(session.waitingTimes === undefined){
+                        console.log('Getting waiting times...:', session.waitingTimes)
+                        // session.stream.getWaitingTimes(session.target).then((waitingTimes) => {
+                        //     session.waitingTimes = waitingTimes
+                        //     session.playerState = 'queued'
 
-                        })
+                        // })
                     }
                     
                     this.monitorSession(sessionId)
 
-                } else if(result.state === 'Failed'){
-                    this.getSession(sessionId).errorDetails = result.errorDetails
-                    this.getSession(sessionId).playerState = 'failed'
+                } else if(state === 'Provisioning'){
+                    // Lets loop again
+                    this.monitorSession(sessionId)
+
+                } else if(state === 'Failed'){
+                    session.errorDetails = {
+                        code: 'unknown',
+                        message: 'unknown',
+                    }
+                    session.playerState = 'failed'
 
                 } else {
-                    
-                    console.log('Unknown state:', result)
+                    console.log('Unknown state:', state)
                 }
 
             }).catch((error) => {
@@ -222,13 +239,13 @@ export default class StreamManager {
 
     getActiveSessions(){
         return new Promise((resolve, reject) => {
-            this.getApi('cloud').getActiveSessions().then((result) => {
+            // this.getApi('cloud').getActiveSessions().then((result) => {
 
-                console.log('Active sessions:', result)
-                resolve(result)
-            }).catch((error) => {
-                reject(error)
-            })
+            //     console.log('Active sessions:', result)
+            //     resolve(result)
+            // }).catch((error) => {
+            //     reject(error)
+            // })
         })
     }
 }
