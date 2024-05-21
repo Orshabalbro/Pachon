@@ -74,45 +74,50 @@ function Stream() {
                         console.log(iceResult)
                         xPlayer.setRemoteIceCandidates(iceResult)
 
+                        let lastState = 'new'
                         xPlayer.onConnectionStateChange((state) => {
                             const connStatus = document.getElementById('component_streamcomponent_connectionstatus')
-                            switch(state){
-                                case 'new':
-                                    connStatus.innerText = 'Starting connection...'
-                                    break
-                                case 'connecting':
-                                    connStatus.innerText = 'Connecting to console...'
-                                    break
-                                case 'connected':
-                                    connStatus.innerText = 'Client has been connected!'
-                                    document.getElementById('component_streamcomponent_loader').className = 'hidden'
+                            if(lastState !== state) {
+                                lastState = state
+                                switch(state){
+                                    case 'new':
+                                        connStatus.innerText = 'Starting connection...'
+                                        break
+                                    case 'connecting':
+                                        connStatus.innerText = 'Connecting to console...'
+                                        break
+                                    case 'connected':
+                                        connStatus.innerText = 'Client has been connected!'
+                                        document.getElementById('component_streamcomponent_loader').className = 'hidden'
 
-                                    setTimeout(() => {
-                                        const gamepad = new xCloudPlayer.Gamepad(0, {
-                                            enable_keyboard: true,
-                                            // vibration: settings.controller_vibration,
-                                        })
-                                        gamepad.attach(xPlayer)
-                                    }, 500)
+                                        setTimeout(() => {
+                                            const gamepad = new xCloudPlayer.Gamepad(0, {
+                                                enable_keyboard: true,
+                                                // vibration: settings.controller_vibration,
+                                            })
+                                            gamepad.attach(xPlayer)
+                                        }, 500)
 
-                                    // Start keepalive loop
-                                    keepaliveInterval = setInterval(() => {
-                                        Ipc.send('streaming', 'sendKeepalive', {
-                                            sessionId: sessionId,
-                                        }).then((result) => {
-                                            console.log('StartStream keepalive:', result)
-                                        }).catch((error) => {
-                                            console.error('Failed to send keepalive. Error details:\n'+JSON.stringify(error))
-                                        })
-                                    }, 30000) // Send every 30 seconds
+                                        // Start keepalive loop
+                                        keepaliveInterval = setInterval(() => {
+                                            Ipc.send('streaming', 'sendKeepalive', {
+                                                sessionId: sessionId,
+                                            }).then((result) => {
+                                                console.log('StartStream keepalive:', result)
+                                            }).catch((error) => {
+                                                console.error('Failed to send keepalive. Error details:\n'+JSON.stringify(error))
+                                            })
+                                        }, 30000) // Send every 30 seconds
 
-                                    break
+                                        break
 
-                                case 'closed':
-                                    console.log('Client has been disconnected. Returning to prev page.')
-                                    xPlayer.destroy()
-                                    window.history.back()
-                                    break
+                                    case 'closed':
+                                        console.log('Client has been disconnected. Returning to prev page.')
+                                        xPlayer.destroy()
+                                        setxPlayer(undefined)
+                                        window.history.back()
+                                        break
+                                }
                             }
                         })
     
