@@ -60,7 +60,7 @@ export default class StreamManager {
     startStream(type:'home'|'cloud', target:string){
         return new Promise((resolve, reject) => {
 
-            this.getApi('home').startStream(type, target).then((stream) => {
+            this.getApi(type).startStream(type, target).then((stream) => {
                 console.log('Streammanager - startStream:', stream)
 
                 const sessionId = stream.getSessionId()
@@ -184,15 +184,13 @@ export default class StreamManager {
                 } else if(state === 'ReadyToConnect'){
                     // Do MSAL Auth
                     this._application._authentication._xal.getMsalToken(this._application._authentication._tokenStore).then((msalToken) => {
-                        console.log(msalToken)
-                        // this.getApi(this.getSession(sessionId).type).sendMSALAuth(sessionId, msalToken.data.lpt).then(() => {
-                        //     this.monitorSession(sessionId)
+                        session.stream.sendMSALAuth(msalToken.data.lpt).then(() => {
+                            this.monitorSession(sessionId)
 
-                        // }).catch((error) => {
-                        //     console.log('MSAL AUTH Error:', error)
-                        //     alert('MSAL AUTH Error:'+ error)
-                        // })
-                        // @TODO: Implement MSAL Auth
+                        }).catch((error) => {
+                            console.log('MSAL AUTH Error:', error)
+                            alert('MSAL AUTH Error:'+ error)
+                        })
                     }).catch((error) => {
                         console.log('MSAL AUTH Error:', error)
                         alert('MSAL AUTH Error:'+ error)
