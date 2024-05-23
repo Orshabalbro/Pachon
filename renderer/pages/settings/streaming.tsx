@@ -31,15 +31,12 @@ function SettingsStreaming() {
         })
     }
 
-    function setVideoProfile(profile){
-        console.log('Set video profile to:', profile)
+    function setVideoResolution(value){
         setSettings({
             ...settings,
-            video_profiles: (profile !== '') ? [profile] : [],
+            video_resolution: value,
         })
     }
-
-    // video_profiles ([])
 
     function setPreferredGameLanguage(e){
         setSettings({
@@ -74,6 +71,15 @@ function SettingsStreaming() {
                     <h1>Stream settings</h1>
 
                     <p>
+
+                        <label>Set resolution:</label>
+                        <select value={ settings.video_resolution || '' } onChange={ (e) => setVideoResolution(e.target.value) }>
+                            <option value="1080p">1080p</option>
+                            <option value="720p">720p</option>
+                        </select>
+                    </p>
+
+                    <p>
                 xHome and xCloud does not support more then 20mbps by default. This setting does not override this limit.
                     </p>
                     <p>
@@ -86,16 +92,6 @@ function SettingsStreaming() {
                         <label>xHome streaming bitrate</label>
                         <input type="range" min="0" max="40960" step="1024" value={settings.xhome_bitrate} onChange={ setxHomeBitrate } />
                 ({ settings.xhome_bitrate === 0 ? 'Unlimited / Off' : Math.floor(settings.xhome_bitrate / 1024) + ' mbps' })
-                    </p>
-
-                    <p>
-                        <label>Set H264 Profile </label>
-                        <select value={ (settings.video_profiles.length > 0) ? settings.video_profiles[0] : '' } onChange={ (e) => setVideoProfile(e.target.value) }>
-                            <option value="">Auto-Negotiate</option>
-                            <option value="4d">High</option>
-                            <option value="42e">Medium</option>
-                            <option value="420">Low</option>
-                        </select>
                     </p>
 
                 </Card>

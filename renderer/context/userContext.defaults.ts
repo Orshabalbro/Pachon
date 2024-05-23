@@ -1,7 +1,8 @@
 export const defaultSettings = {
     xhome_bitrate: 0,
     xcloud_bitrate: 0,
-    video_profiles: [],
+    video_resolution: '1080p',
+
     preferred_game_language: 'en-US',
     controller_vibration: true,
     video_size: 'default',

@@ -62,6 +62,14 @@ function SettingsVideo() {
                     </p>
 
                     <p>
+                        <label>Force low resolution video</label>
+                        <label style={{ minWidth: 0 }}>
+                            <input type='checkbox' onChange={ forceLowResolution } checked={settings.app_lowresolution} />&nbsp; ({ settings.app_lowresolution ? 'Enabled' : 'Disabled'})
+                        </label><br />
+                        <small>(This option is useful on the Steam Deck and enables the application to render in a low resolution so FSR can be enabled.)</small>
+                    </p>
+
+                    <p>
                         <label>Video aspect size</label>
                         <select value={ settings.video_size } onChange={(e) => {
                             setVideoSize(e.target.value)
@@ -70,14 +78,6 @@ function SettingsVideo() {
                             <option value='stretch'>Stretch</option>
                             <option value='zoom'>Zoom</option>
                         </select>
-                    </p>
-
-                    <p>
-                        <label>Force low resolution video</label>
-                        <label style={{ minWidth: 0 }}>
-                            <input type='checkbox' onChange={ forceLowResolution } checked={settings.app_lowresolution} />&nbsp; ({ settings.app_lowresolution ? 'Enabled' : 'Disabled'})
-                        </label><br />
-                        <small>(This option is useful on the Steam Deck and enables the application to render in a low resolution so FSR can be enabled.)</small>
                     </p>
                 </Card>
 

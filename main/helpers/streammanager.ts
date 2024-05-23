@@ -1,7 +1,8 @@
 import Stream from 'xbox-xcloud-player/dist/lib/stream'
 import Application from '../application'
-
 import ApiClient from 'xbox-xcloud-player/dist/apiclient'
+import IpcSettings from '../ipc/settings'
+import { defaultSettings } from '../../renderer/context/userContext.defaults'
 
 export interface playResult {
     sessionPath:string;
@@ -60,7 +61,12 @@ export default class StreamManager {
     startStream(type:'home'|'cloud', target:string){
         return new Promise((resolve, reject) => {
 
-            this.getApi(type).startStream(type, target).then((stream) => {
+            const api = this.getApi(type)
+            const setting = (this._application._store.get('settings', { video_resolution: '1080p' }) as typeof defaultSettings).video_resolution
+            // @ts-expect-error _config is private
+            api._config.force_1080p = (setting === '1080p') ? true : false
+
+            api.startStream(type, target).then((stream) => {
                 console.log('Streammanager - startStream:', stream)
 
                 const sessionId = stream.getSessionId()

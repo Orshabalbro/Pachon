@@ -61,10 +61,6 @@ export default class IpcSettings extends IpcBase {
 
                 this.setSettings(settings)
             })
-
-
-            // if(this._application._mainWindow.height !)
-            // this._application._mainWindow.setSize(960, 600)
              
             resolve(true)
         })
