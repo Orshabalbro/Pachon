@@ -49,6 +49,6 @@ div#component_settings_sidebar_content {
     left: 200px;
     right: 0px;
     bottom: 0px;
-    padding-top: 20px;
+    padding-top: 0px;
     overflow-y: auto;
 }

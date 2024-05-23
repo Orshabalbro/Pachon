@@ -6,6 +6,8 @@ import Card from '../../components/ui/card'
 import Ipc from '../../lib/ipc'
 
 import { useSettings } from '../../context/userContext'
+import BreadcrumbBar from '../../components/ui/breadcrumbbar'
+import Link from 'next/link'
 
 
 function SettingsStreaming() {
@@ -67,6 +69,10 @@ function SettingsStreaming() {
             </Head>
 
             <SettingsSidebar>
+                <BreadcrumbBar className='settings'>
+                    <Link href="/settings/home">Settings</Link>
+                    <Link href="/settings/streaming">Streaming</Link>
+                </BreadcrumbBar>
                 <Card>
                     <h1>Stream settings</h1>
 

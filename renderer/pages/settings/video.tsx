@@ -4,6 +4,8 @@ import SettingsSidebar from '../../components/settings/sidebar'
 import Card from '../../components/ui/card'
 import Ipc from '../../lib/ipc'
 import { useSettings } from '../../context/userContext'
+import BreadcrumbBar from '../../components/ui/breadcrumbbar'
+import Link from 'next/link'
 
 
 function SettingsVideo() {
@@ -51,6 +53,10 @@ function SettingsVideo() {
             </Head>
 
             <SettingsSidebar>
+                <BreadcrumbBar className='settings'>
+                    <Link href="/settings/home">Settings</Link>
+                    <Link href="/settings/video">Video & Audio</Link>
+                </BreadcrumbBar>
                 <Card>
                     <h1>Video</h1>
 

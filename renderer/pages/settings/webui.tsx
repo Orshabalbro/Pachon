@@ -5,6 +5,8 @@ import Card from '../../components/ui/card'
 import Button from '../../components/ui/button'
 import Ipc from '../../lib/ipc'
 import { useSettings } from '../../context/userContext'
+import BreadcrumbBar from '../../components/ui/breadcrumbbar'
+import Link from 'next/link'
 
 
 function SettingsWebUI() {
@@ -54,6 +56,11 @@ function SettingsWebUI() {
             </Head>
 
             <SettingsSidebar>
+                <BreadcrumbBar className='settings'>
+                    <Link href="/settings/home">Settings</Link>
+                    <Link href="/settings/webui">Web UI</Link>
+                </BreadcrumbBar>
+
                 <Card>
                     <h1>WebUI</h1>
 

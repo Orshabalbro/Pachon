@@ -8,6 +8,7 @@ import Image from 'next/image'
 import GreenlightLogo from '../../public/images/logo.png'
 import Card from '../../components/ui/card'
 import Button from '../../components/ui/button'
+import BreadcrumbBar from '../../components/ui/breadcrumbbar'
 
 interface userData {
   gamerpic?: string;
@@ -43,6 +44,11 @@ function SettingsHome() {
             </Head>
 
             <SettingsSidebar>
+                <BreadcrumbBar className='settings'>
+                    <Link href="/settings/home">Settings</Link>
+                    <Link href="/settings/home">About</Link>
+                </BreadcrumbBar>
+
                 <Card>
                     <div id="component_auth_modal">
                         <div className="component_auth_profile_gamerpic" style={{

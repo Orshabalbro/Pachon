@@ -90,9 +90,15 @@ function Stream() {
                                         connStatus.innerText = 'Client has been connected!'
                                         document.getElementById('component_streamcomponent_loader').className = 'hidden'
 
+                                        // @TODO: Improve this
                                         setTimeout(() => {
                                             const gamepad = new xCloudPlayer.Gamepad(0, {
-                                                enable_keyboard: true,
+                                                enable_keyboard: settings.gamepad_config.enable_keyboard,
+                                                keyboard_mapping: settings.gamepad_config.keyboard_mapping,
+                                                gamepad_mapping: settings.gamepad_config.gamepad_mapping,
+                                                gamepad_axes_mapping: settings.gamepad_config.gamepad_axes_mapping,
+                                                gamepad_deadzone: settings.gamepad_config.gamepad_deadzone,
+                                                
                                                 // vibration: settings.controller_vibration,
                                             })
                                             gamepad.attach(xPlayer)

@@ -1,7 +1,6 @@
 import Stream from 'xbox-xcloud-player/dist/lib/stream'
 import Application from '../application'
 import ApiClient from 'xbox-xcloud-player/dist/apiclient'
-import IpcSettings from '../ipc/settings'
 import { defaultSettings } from '../../renderer/context/userContext.defaults'
 
 export interface playResult {

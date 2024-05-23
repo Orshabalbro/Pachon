@@ -3,6 +3,8 @@ import Head from 'next/head'
 import Ipc from '../../lib/ipc'
 import Card from '../../components/ui/card'
 import SettingsSidebar from '../../components/settings/sidebar'
+import BreadcrumbBar from '../../components/ui/breadcrumbbar'
+import Link from 'next/link'
 
 function SettingsDebug() {
     const [appDebug, setAppDebug] = React.useState([])
@@ -22,6 +24,11 @@ function SettingsDebug() {
             </Head>
 
             <SettingsSidebar>
+                <BreadcrumbBar className='settings'>
+                    <Link href="/settings/home">Settings</Link>
+                    <Link href="/settings/debug">Debug</Link>
+                </BreadcrumbBar>
+                
                 <div id="page_settings_debug_application">
                     {
                         appDebug.map((item) => {

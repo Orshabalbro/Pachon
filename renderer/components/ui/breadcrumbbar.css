@@ -1,5 +1,5 @@
 #app_body_container .component_breadcrumbbar_push {
-  height: 32px;
+  height: 42px;
 }
 
 #app_body_container .component_breadcrumbbar {
@@ -19,6 +19,12 @@
     color: #ffffff;
     position: fixed;
     z-index: 11;
+}
+
+#app_body_container .component_breadcrumbbar.settings {
+  right: 30vw;
+  left: 200px;
+  width: auto;
 }
 
 #app_body_container .component_breadcrumbbar a {

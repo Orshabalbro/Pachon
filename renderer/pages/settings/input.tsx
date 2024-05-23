@@ -5,78 +5,13 @@ import SettingsSidebar from '../../components/settings/sidebar'
 import Card from '../../components/ui/card'
 
 import { useSettings } from '../../context/userContext'
-
-function invert(obj) {
-    const new_obj = {}
-    for (const prop in obj) {
-        new_obj[obj[prop]] = prop
-    }
-    return new_obj
-}
-
-function KeySettings({keyConfigs, setKeyConfig}) {
-    const mappableButtons = ['DPadUp', 'DPadDown', 'DPadLeft', 'DPadRight', 'A', 'B', 'X', 'Y', 'View', 'Menu', 'Nexus', 'LeftShoulder', 'RightShoulder', 'LeftTrigger', 'RightTrigger', 'LeftThumb', 'RightThumb']
-    // console.log('KEYS:', keyConfigs, mappableButtons)
-    keyConfigs = invert(keyConfigs)
-    return <p>
-        {
-            mappableButtons.map(
-                (btn:string) => {
-                    let fullBtnText = ''
-
-                    switch(btn){
-                        case 'DPadUp':
-                            fullBtnText = 'DPad Up'
-                            break
-                        case 'DPadDown':
-                            fullBtnText = 'DPad Down'
-                            break
-                        case 'DPadLeft':
-                            fullBtnText = 'DPad Left'
-                            break
-                        case 'DPadRight':
-                            fullBtnText = 'DPad Right'
-                            break
-                        case 'LeftShoulder':
-                            fullBtnText = 'Left Shoulder'
-                            break
-                        case 'RightShoulder':
-                            fullBtnText = 'Right Shoulder'
-                            break
-                        case 'LeftTrigger':
-                            fullBtnText = 'Left Trigger'
-                            break
-                        case 'RightTrigger':
-                            fullBtnText = 'Right Trigger'
-                            break
-                        case 'LeftThumb':
-                            fullBtnText = 'Left Thumbstick'
-                            break
-                        case 'RightThumb':
-                            fullBtnText = 'Right Thumbstick'
-                            break
-                        default:
-                            fullBtnText = btn
-                            break
-                    }
-
-                    return <p key={btn}>
-                        <label>{fullBtnText}</label>
-                        <label style={{minWidth: 0}}>
-                            <input type='text' className='text' onKeyUp={(e) => setKeyConfig(btn, e)} value={keyConfigs[btn] ?? 'None'}/>
-                        </label>
-                    </p>
-                }
-            )
-        }
-    </p>
-}
+import Button from '../../components/ui/button'
+import BreadcrumbBar from '../../components/ui/breadcrumbbar'
+import Link from 'next/link'
 
 function SettingsInput() {
     const { settings, setSettings} = useSettings()
     const [ controllerPing, setControllerPing] = React.useState(0)
-
-    const [controllerKeys, setControllerKeys] = React.useState(settings.input_mousekeyboard_config)
 
     React.useEffect(() => {
         console.log('Last controller check:', controllerPing)
@@ -96,48 +31,13 @@ function SettingsInput() {
         })
     }
 
-    function setTouchInput(){
+    function setGamepadConfig(value){
         setSettings({
             ...settings,
-            input_touch: (! settings.input_touch),
-        })
-    }
-
-    function setMKBInput(){
-        setSettings({
-            ...settings,
-            input_mousekeyboard: (! settings.input_mousekeyboard),
-        })
-    }
-
-    function setLegacyInput(){
-        setSettings({
-            ...settings,
-            input_newgamepad: (! settings.input_newgamepad),
-        })
-    }
-
-    function setKeyConfig(button:string, event) {
-        let ckeys = controllerKeys
-        if(ckeys === undefined) {
-            ckeys = {} as any
-        }
-
-
-        for (const ckeysKey of Object.keys(ckeys)) {
-            if(ckeys[ckeysKey] === button) delete ckeys[ckeysKey]
-        }
-
-        if (event.key !== 'Escape')
-            ckeys[event.key] = button
-
-        setControllerKeys(ckeys)
-
-        event.target.blur()
-
-        setSettings({
-            ...settings,
-            input_mousekeyboard_config: ckeys,
+            gamepad_config: {
+                ...settings.gamepad_config,
+                ...value,
+            },
         })
     }
 
@@ -148,17 +48,56 @@ function SettingsInput() {
             </Head>
 
             <SettingsSidebar>
+                <BreadcrumbBar className='settings'>
+                    <Link href="/settings/home">Settings</Link>
+                    <Link href="/settings/input">Input</Link>
+                </BreadcrumbBar>
+
                 <Card>
-                    <h1>Input</h1>
+                    <h1>Gamepad</h1>
 
                     <p>
-                        <label>Enable vibration</label>
+                        <label>Enable vibration (broken)</label>
                         <label style={{ minWidth: 0 }}>
                             <input type='checkbox' onChange={ setControllerVibration } checked={settings.controller_vibration} />&nbsp; ({ settings.controller_vibration ? 'Enabled' : 'Disabled'})
                         </label>
                     </p>
-
                     <p>
+                        <label>Enable keyboard mapping</label>
+                        <label style={{ minWidth: 0 }}>
+                            <input type='checkbox' onChange={ () => setGamepadConfig({ enable_keyboard: !settings.gamepad_config.enable_keyboard }) } checked={settings.gamepad_config.enable_keyboard} />&nbsp; ({ settings.gamepad_config.enable_keyboard ? 'Enabled' : 'Disabled'})
+                        </label>
+                    </p>
+                    <p hidden={ !settings.gamepad_config.enable_keyboard }>
+                        <label></label>
+                        <label style={{ minWidth: 0 }}>
+                            <Link href="/settings/input/keyboardmap"><Button className="btn-small" label="Configure Keyboard mappings"></Button></Link>
+                        </label>
+                    </p>
+                    <p>
+                        <label></label>
+                        <label style={{ minWidth: 0 }}>
+                            <Link href="/settings/input/gamepadmap"><Button className="btn-small" label="Configure Gamepad mappings"></Button></Link>
+                        </label>
+                    </p>
+                </Card>
+
+                <Card>
+                    <h1>Touch</h1>
+
+                    <p><i>No options yet</i></p>
+                </Card>
+
+                <Card>
+                    <h1>Mouse & Keyboard</h1>
+
+                    <p><i>No options yet</i></p>
+                </Card>
+
+                <Card>
+                    <h1>Input</h1>
+
+                    {/* <p>
                         <label>Enable Touch input</label>
                         <label style={{ minWidth: 0 }}>
                             <input type='checkbox' onChange={ setTouchInput } checked={settings.input_touch} />&nbsp; ({ settings.input_touch ? 'Enabled' : 'Disabled'})
@@ -179,7 +118,7 @@ function SettingsInput() {
                             <input type='checkbox' onChange={ setLegacyInput } checked={!settings.input_newgamepad} />&nbsp; ({ !settings.input_newgamepad ? 'Enabled' : 'Disabled'})
                         </label><br />
                         <small>(Disabling this feature will disable the keyboard to gamepad mapping and only allows controls from the gamepad.)</small>
-                    </p>
+                    </p> */}
                 </Card>
 
                 <Card>
@@ -205,15 +144,6 @@ function SettingsInput() {
                             })
                         }
                     </div>
-                </Card>
-
-                <Card hidden={ settings.input_newgamepad }>
-                    <h1>Keyboard mappings</h1>
-                    <p>
-                        {
-                            <KeySettings keyConfigs={controllerKeys} setKeyConfig={setKeyConfig} />
-                        }
-                    </p>
                 </Card>
             </SettingsSidebar>
       
