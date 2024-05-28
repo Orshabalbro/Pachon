@@ -98,6 +98,8 @@ function Stream() {
                                                 gamepad_mapping: settings.gamepad_config.gamepad_mapping,
                                                 gamepad_axes_mapping: settings.gamepad_config.gamepad_axes_mapping,
                                                 gamepad_deadzone: settings.gamepad_config.gamepad_deadzone,
+                                                enable_vibration: settings.controller_vibration,
+                                                // gamepad_force_capture: false, // @TODO: Implement config switch
                                                 
                                                 // vibration: settings.controller_vibration,
                                             })

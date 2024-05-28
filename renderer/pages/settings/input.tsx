@@ -57,10 +57,17 @@ function SettingsInput() {
                     <h1>Gamepad</h1>
 
                     <p>
-                        <label>Enable vibration (broken)</label>
+                        <label>Enable vibration</label>
                         <label style={{ minWidth: 0 }}>
                             <input type='checkbox' onChange={ setControllerVibration } checked={settings.controller_vibration} />&nbsp; ({ settings.controller_vibration ? 'Enabled' : 'Disabled'})
                         </label>
+                    </p>
+                    <p>
+                        <label>Force gamepad capture</label>
+                        <label style={{ minWidth: 0 }}>
+                            <input type='checkbox' onChange={ () => setGamepadConfig({ gamepad_force_capture: !settings.gamepad_config.gamepad_force_capture }) } checked={settings.gamepad_config.gamepad_force_capture} />&nbsp; ({ settings.gamepad_config.gamepad_force_capture ? 'Enabled' : 'Disabled'})
+                        </label> <br />
+                        <small>Enabling this will capture gamepad input even when the window is not focussed.</small>
                     </p>
                     <p>
                         <label>Enable keyboard mapping</label>
@@ -68,10 +75,10 @@ function SettingsInput() {
                             <input type='checkbox' onChange={ () => setGamepadConfig({ enable_keyboard: !settings.gamepad_config.enable_keyboard }) } checked={settings.gamepad_config.enable_keyboard} />&nbsp; ({ settings.gamepad_config.enable_keyboard ? 'Enabled' : 'Disabled'})
                         </label>
                     </p>
-                    <p hidden={ !settings.gamepad_config.enable_keyboard }>
+                    <p>
                         <label></label>
                         <label style={{ minWidth: 0 }}>
-                            <Link href="/settings/input/keyboardmap"><Button className="btn-small" label="Configure Keyboard mappings"></Button></Link>
+                            <Link href="/settings/input/keyboardmap"><Button className="btn-small" label="Configure Keyboard mappings" disabled={ !settings.gamepad_config.enable_keyboard }></Button></Link>
                         </label>
                     </p>
                     <p>
@@ -92,33 +99,6 @@ function SettingsInput() {
                     <h1>Mouse & Keyboard</h1>
 
                     <p><i>No options yet</i></p>
-                </Card>
-
-                <Card>
-                    <h1>Input</h1>
-
-                    {/* <p>
-                        <label>Enable Touch input</label>
-                        <label style={{ minWidth: 0 }}>
-                            <input type='checkbox' onChange={ setTouchInput } checked={settings.input_touch} />&nbsp; ({ settings.input_touch ? 'Enabled' : 'Disabled'})
-                        </label>
-                    </p>
-
-                    <p>
-                        <label>Enable Mouse & Keyboard</label>
-                        <label style={{ minWidth: 0 }}>
-                            <input type='checkbox' onChange={ setMKBInput } checked={settings.input_mousekeyboard} />&nbsp; ({ settings.input_mousekeyboard ? 'Enabled' : 'Disabled'})
-                        </label> <br />
-                        { (!settings.input_newgamepad && settings.input_mousekeyboard) ? <small style={{ color: 'orange' }}>Using the Mouse & Keyboard driver together with the Gamepad keyboard mappings will cause conflicts</small> : '' }
-                    </p>
-
-                    <p>
-                        <label>Enable Keyboard to Gamepad</label>
-                        <label style={{ minWidth: 0 }}>
-                            <input type='checkbox' onChange={ setLegacyInput } checked={!settings.input_newgamepad} />&nbsp; ({ !settings.input_newgamepad ? 'Enabled' : 'Disabled'})
-                        </label><br />
-                        <small>(Disabling this feature will disable the keyboard to gamepad mapping and only allows controls from the gamepad.)</small>
-                    </p> */}
                 </Card>
 
                 <Card>

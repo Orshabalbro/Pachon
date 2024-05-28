@@ -45,6 +45,7 @@ const gamepad_config = {
         'RightThumbYAxis': '3',
     },
     gamepad_deadzone: 0.2,
+    gamepad_force_capture: false,
 }
 
 export const defaultSettings = {
